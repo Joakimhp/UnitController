@@ -4,19 +4,33 @@ using UnityEngine;
 
 public class Setup : MonoBehaviour
 {
-	List<Handler> handlers;
+    static List<Handler> handlers;
 
-	private void Awake() {
-		handlers = new List<Handler> ( GetComponents<Handler> () );
+    TeamHandler teamHandler;
+    InputHandler inputHandler;
 
-		foreach ( Handler handler in handlers ) {
-			handler.Initialize ();
-		}
+    private void Awake() {
+        teamHandler = GetComponent<TeamHandler> ();
+        inputHandler = GetComponent<InputHandler> ();
 
-		
-	}
-}
+        teamHandler.Initialize ();
+        inputHandler.Initialize ( teamHandler );
+        
+        handlers = new List<Handler> ( GetComponents<Handler> () );
 
-public abstract class Handler : MonoBehaviour {
-	public abstract void Initialize();
+        foreach ( Handler handler in handlers ) {
+            handler.Initialize ();
+        }
+
+    }
+
+    public static Handler GetHandlerOfType<T>( T type ) {
+        Handler returnHandler = handlers[0];
+        foreach ( Handler handler in handlers ) {
+            if ( handler.GetType() == type.GetType() ) {
+                returnHandler = handler;
+            }
+        }
+        return returnHandler;
+    }
 }

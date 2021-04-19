@@ -7,21 +7,38 @@ public class InputHandler : Handler {
 	private Camera camera;
 
 	private List<Unit> selectedFriendlyUnits;
-	private bool selectingFriendlyUnits = false;
 
-	public override void Initialize() {
+	TeamHandler teamHandler;
+	private enum CurrentMouseState
+    {
+		Idle,
+		SelectingFriendlyUnits,
+		SelectingEnemyUnits
+    }
+
+	private CurrentMouseState currentMouseState;
+
+	public override void Initialize(TeamHandler teamHandler) {
 		camera = Camera.main;
-		selectedFriendlyUnits = new List<Unit> ();
+		selectedFriendlyUnits =  new List<Unit> ();
+		currentMouseState = CurrentMouseState.Idle;
+		this.teamHandler = teamHandler;
+	}
+
+	private void SetCurrentMouseState() {
+		RaycastHit hit;
+		Ray ray = camera.ScreenPointToRay ( Input.mousePosition );
+
+		if ( Physics.Raycast ( ray , out hit ) ) {
+			Transform objectHit = hit.transform;
+			Unit unitHit = objectHit.GetComponent<Unit> ();
+
+		}
 	}
 
 	private void Update() {
 		if ( Input.GetMouseButtonDown ( 0 ) ) {
-			RaycastHit hit;
-			Ray ray = camera.ScreenPointToRay ( Input.mousePosition );
-
-			if ( Physics.Raycast ( ray , out hit ) ) {
-				
-			}
+			SetCurrentMouseState ();
 		}
 
 		if ( Input.GetMouseButton ( 0 ) ) {
